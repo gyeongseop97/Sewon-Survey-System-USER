@@ -5,22 +5,41 @@ const SUPABASE_KEY = "sb_publishable_fnGFEvCmhZRRIWj0qrEEeA_Vex3mxac";
 window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const $ = (id) => document.getElementById(id);
+// ------------------ Auth helpers ------------------
 async function sbSignInWithEmail(email, password) {
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  const { data, error } = await window.sb.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data;
 }
 
-async function sbSignOut() {
-  const { error } = await sb.auth.signOut();
-  if (error) throw error;
-}
-
 async function sbGetSession() {
-  const { data, error } = await sb.auth.getSession();
+  const { data, error } = await window.sb.auth.getSession();
   if (error) throw error;
   return data.session;
 }
+
+// ------------------ Require login ------------------
+async function requireLoginOrPrompt() {
+  const session = await sbGetSession();
+  if (session) return session;
+
+  const email = prompt("이메일을 입력하세요");
+  const password = prompt("비밀번호를 입력하세요");
+  if (!email || !password) throw new Error("로그인이 필요합니다.");
+
+  return (await sbSignInWithEmail(email, password)).session;
+}
+
+// ✅ 앱 시작 시 1회 실행
+(async () => {
+  try {
+    await requireLoginOrPrompt();
+    console.log("✅ Supabase login OK");
+  } catch (e) {
+    alert("로그인 실패: " + (e?.message || e));
+  }
+})();
+
 
   // ------------------ UI styles (disabled overlay) ------------------
 // 룰로 비활성화된 문항 위에 '옅은 회색 음영 + 안내 문구'가 덮이도록 스타일을 주입합니다.
