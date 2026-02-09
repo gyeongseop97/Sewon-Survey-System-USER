@@ -70,8 +70,10 @@ async function requireLoginOrModal(){
   // ✅ 여기 추가: getSession 실패해도 모달은 반드시 띄움
   try {
     const { data } = await sb.auth.getSession();
-    if (data?.session) return data.session;
-  } catch (e) {
+   if (data?.session) {
+     closeAuthModal(); // ✅ 혹시 떠있으면 닫기
+     return data.session;
+   }  } catch (e) {
     openAuthModal();
     showAuthError(normalizeAuthError(e));
     throw e;
@@ -1614,7 +1616,17 @@ requestAnimationFrame(scrollCanvasTop);
         }
       };
     }
-
+  const btnLogout = $("btnLogout");
+  if (btnLogout) {
+    btnLogout.onclick = async () => {
+      try {
+        await sb.auth.signOut();   // ← 여기
+        openAuthModal();           // ← 그리고 여기
+      } catch (e) {
+        alert("로그아웃 실패: " + (e?.message || e));
+      }
+    };
+  }
 const btnNext = $("btnNextG2");
 const btnPrev = $("btnPrevG2");
 
@@ -1640,9 +1652,7 @@ if (btnNext && btnPrev) {
 
   }
 document.addEventListener("DOMContentLoaded", () => {
-
   ensureDisabledOverlayStyles();
-openAuthModal(); 
   bind();
   renderAll();
 
@@ -1653,7 +1663,7 @@ openAuthModal();
       console.error(e);
     }
   })();
-
 });
+
 
 })();
