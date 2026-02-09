@@ -7,6 +7,22 @@ const SUPABASE_KEY = "sb_publishable_fnGFEvCmhZRRIWj0qrEEeA_Vex3mxac";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const $ = (id) => document.getElementById(id);
+async function sbSignInWithEmail(email, password) {
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return data;
+}
+
+async function sbSignOut() {
+  const { error } = await sb.auth.signOut();
+  if (error) throw error;
+}
+
+async function sbGetSession() {
+  const { data, error } = await sb.auth.getSession();
+  if (error) throw error;
+  return data.session;
+}
 
   // ------------------ UI styles (disabled overlay) ------------------
 // 룰로 비활성화된 문항 위에 '옅은 회색 음영 + 안내 문구'가 덮이도록 스타일을 주입합니다.
