@@ -1,45 +1,82 @@
 (() => {
-  // ------------------ Supabase init ------------------
+// ------------------ Supabase init ------------------
 const SUPABASE_URL = "https://pztlmyfutfmbmlvavwuz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_fnGFEvCmhZRRIWj0qrEEeA_Vex3mxac";
-
 window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.sb;
 
-  const $ = (id) => document.getElementById(id);
-// ------------------ Auth helpers ------------------
-async function sbSignInWithEmail(email, password) {
-  const { data, error } = await window.sb.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
+// ------------------ Auth UI helpers ------------------
+function showAuthError(msg){
+  const el = document.getElementById("authError");
+  if (!el) return;
+  el.textContent = msg || "";
+  el.classList.toggle("show", !!msg);
 }
 
-async function sbGetSession() {
-  const { data, error } = await window.sb.auth.getSession();
-  if (error) throw error;
-  return data.session;
+function openAuthModal(){
+  const bd = document.getElementById("authBackdrop");
+  if (bd) bd.classList.remove("hidden");
+  showAuthError("");
+  const email = document.getElementById("authEmail");
+  if (email) email.focus();
 }
 
-// ------------------ Require login ------------------
-async function requireLoginOrPrompt() {
-  const session = await sbGetSession();
-  if (session) return session;
-
-  const email = prompt("이메일을 입력하세요");
-  const password = prompt("비밀번호를 입력하세요");
-  if (!email || !password) throw new Error("로그인이 필요합니다.");
-
-  return (await sbSignInWithEmail(email, password)).session;
+function closeAuthModal(){
+  const bd = document.getElementById("authBackdrop");
+  if (bd) bd.classList.add("hidden");
+  showAuthError("");
 }
 
-// ✅ 앱 시작 시 1회 실행
-(async () => {
-  try {
-    await requireLoginOrPrompt();
-    console.log("✅ Supabase login OK");
-  } catch (e) {
-    alert("로그인 실패: " + (e?.message || e));
-  }
-})();
+async function requireLoginOrModal(){
+  const { data } = await sb.auth.getSession();
+  if (data?.session) return data.session;
+
+  return new Promise((resolve, reject) => {
+    openAuthModal();
+
+    const btnLogin = document.getElementById("btnAuthLogin");
+    const btnSignUp = document.getElementById("btnAuthSignUp");
+
+    const doLogin = async () => {
+      try{
+        const email = document.getElementById("authEmail")?.value?.trim();
+        const password = document.getElementById("authPassword")?.value;
+        if (!email || !password) return showAuthError("이메일/비밀번호를 입력해 주세요.");
+
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) return showAuthError(error.message);
+
+        closeAuthModal();
+        resolve(data.session);
+      } catch (e){
+        showAuthError(e?.message || String(e));
+      }
+    };
+
+    const doSignUp = async () => {
+      try{
+        const email = document.getElementById("authEmail")?.value?.trim();
+        const password = document.getElementById("authPassword")?.value;
+        if (!email || !password) return showAuthError("이메일/비밀번호를 입력해 주세요.");
+
+        const { error } = await sb.auth.signUp({ email, password });
+        if (error) return showAuthError(error.message);
+
+        showAuthError("회원가입 완료. 이제 로그인 버튼을 눌러주세요.");
+      } catch (e){
+        showAuthError(e?.message || String(e));
+      }
+    };
+
+    if (btnLogin) btnLogin.onclick = doLogin;
+    if (btnSignUp) btnSignUp.onclick = doSignUp;
+
+    // Enter 키로 로그인
+    const pw = document.getElementById("authPassword");
+    if (pw) pw.onkeydown = (ev) => { if (ev.key === "Enter") doLogin(); };
+  });
+}
+
 
 
   // ------------------ UI styles (disabled overlay) ------------------
