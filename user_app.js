@@ -1571,7 +1571,14 @@ if (btnNext && btnPrev) {
 }
 
   }
-  ensureDisabledOverlayStyles();
-  bind();
-  renderAll();
+ensureDisabledOverlayStyles();
+(async () => {
+  try {
+    await requireLoginOrModal();   // ✅ 로그인 먼저
+    bind();
+    renderAll();
+  } catch (e) {
+    alert("로그인이 필요합니다.");
+  }
+})();
 })();
