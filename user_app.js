@@ -65,8 +65,16 @@ async function requireLoginOrModal(){
     showAuthError("Supabase 설정을 불러오지 못했습니다. CDN/키 설정을 확인해 주세요.");
     throw new Error("Supabase auth client unavailable.");
   }
-  const { data } = await sb.auth.getSession();
-  if (data?.session) return data.session;
+
+  // ✅ 여기 추가: getSession 실패해도 모달은 반드시 띄움
+  try {
+    const { data } = await sb.auth.getSession();
+    if (data?.session) return data.session;
+  } catch (e) {
+    openAuthModal();
+    showAuthError(normalizeAuthError(e));
+    throw e;
+  }
 
   return new Promise((resolve, reject) => {
     openAuthModal();
@@ -126,11 +134,11 @@ async function requireLoginOrModal(){
     if (btnLogin) btnLogin.onclick = doLogin;
     if (btnSignUp) btnSignUp.onclick = doSignUp;
 
-    // Enter 키로 로그인
     const pw = document.getElementById("authPassword");
     if (pw) pw.onkeydown = (ev) => { if (ev.key === "Enter") doLogin(); };
   });
 }
+
 
 
 
