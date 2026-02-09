@@ -952,3 +952,40 @@ body{
 .sidebar .tree{
   max-height: none;
 }
+/* ---------- Auth modal ---------- */
+.auth-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+}
+.auth-backdrop.hidden{ display:none; }
+
+.auth-card{
+  width:min(420px,92vw);
+  background:#fff;
+  border:1px solid rgba(226,232,240,.9);
+  border-radius:18px;
+  box-shadow:0 18px 50px rgba(15,23,42,.25);
+  padding:18px;
+}
+.auth-title{ font-size:16px; font-weight:800; margin:0 0 6px; }
+.auth-sub{ font-size:12px; color:var(--muted); margin:0 0 12px; line-height:1.4; }
+
+.auth-row{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
+.auth-row label{ font-size:12px; color:var(--muted); }
+.auth-row input{
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  padding:0 12px;
+  font-size:14px;
+  outline:none;
+}
+
+.auth-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
+.auth-error{ margin-top:10px; font-size:12px; color:#b91c1c; display:none; }
+.auth-error.show{ display:block; }
