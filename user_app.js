@@ -1638,7 +1638,7 @@ if (btnNext && btnPrev) {
 document.addEventListener("DOMContentLoaded", () => {
 
   ensureDisabledOverlayStyles();
-
+openAuthModal(); 
   bind();
   renderAll();
 
