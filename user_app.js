@@ -3,6 +3,7 @@
 const SUPABASE_URL = "https://pztlmyfutfmbmlvavwuz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_fnGFEvCmhZRRIWj0qrEEeA_Vex3mxac";
 const supabaseLib = window.supabase;
+const $ = (id) => document.getElementById(id);
 
 if (!supabaseLib?.createClient) {
   console.error("Supabase SDK를 불러오지 못했습니다. CDN 로드를 확인해 주세요.");
