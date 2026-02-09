@@ -1634,18 +1634,21 @@ if (btnNext && btnPrev) {
 }
 
   }
-ensureDisabledOverlayStyles();
+document.addEventListener("DOMContentLoaded", () => {
 
-bind();
-renderAll();
+  ensureDisabledOverlayStyles();
 
-(async () => {
-  try {
-    await requireLoginOrModal(); // 로그인 성공하면 그대로 진행
-  } catch (e) {
-    // alert 대신 모달 유지 + 에러 표시가 사용자 경험상 훨씬 좋습니다.
-    console.error(e);
-  }
-})();
+  bind();
+  renderAll();
+
+  (async () => {
+    try {
+      await requireLoginOrModal();
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+
+});
 
 })();
