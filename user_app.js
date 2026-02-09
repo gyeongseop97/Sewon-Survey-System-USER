@@ -1627,13 +1627,17 @@ if (btnNext && btnPrev) {
 
   }
 ensureDisabledOverlayStyles();
+
+bind();
+renderAll();
+
 (async () => {
   try {
-    await requireLoginOrModal();   // ✅ 로그인 먼저
-    bind();
-    renderAll();
+    await requireLoginOrModal(); // 로그인 성공하면 그대로 진행
   } catch (e) {
-    alert("로그인이 필요합니다.");
+    // alert 대신 모달 유지 + 에러 표시가 사용자 경험상 훨씬 좋습니다.
+    console.error(e);
   }
 })();
+
 })();
