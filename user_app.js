@@ -84,6 +84,8 @@ async function requireLoginOrModal(){
     const btnSignUp = document.getElementById("btnAuthSignUp");
 
     const doLogin = async () => {
+      console.log("[AUTH] login click");
+  showAuthError("로그인 요청 중...");
       try{
         setAuthLoading(true);
         const email = document.getElementById("authEmail")?.value?.trim();
@@ -109,6 +111,8 @@ async function requireLoginOrModal(){
     };
 
     const doSignUp = async () => {
+      console.log("[AUTH] signup click");
+  showAuthError("회원가입 요청 중...");
       try{
         setAuthLoading(true);
         const email = document.getElementById("authEmail")?.value?.trim();
