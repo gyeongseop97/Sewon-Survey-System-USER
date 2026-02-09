@@ -1,4 +1,11 @@
 (() => {
+  // ------------------ Supabase init ------------------
+const SUPABASE_URL = "https://pztlmyfutfmbmlvavwuz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_fnGFEvCmhZRRIWj0qrEEeA_Vex3mxac";
+
+// UMD로 로드하면 window.supabase가 생깁니다.
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
   const $ = (id) => document.getElementById(id);
 
   // ------------------ UI styles (disabled overlay) ------------------
