@@ -2,7 +2,13 @@
 // ------------------ Supabase init ------------------
 const SUPABASE_URL = "https://pztlmyfutfmbmlvavwuz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_fnGFEvCmhZRRIWj0qrEEeA_Vex3mxac";
-window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseLib = window.supabase;
+
+if (!supabaseLib?.createClient) {
+  console.error("Supabase SDK를 불러오지 못했습니다. CDN 로드를 확인해 주세요.");
+}
+
+window.sb = supabaseLib?.createClient?.(SUPABASE_URL, SUPABASE_KEY);
 const sb = window.sb;
 
 // ------------------ Auth UI helpers ------------------
@@ -11,6 +17,32 @@ function showAuthError(msg){
   if (!el) return;
   el.textContent = msg || "";
   el.classList.toggle("show", !!msg);
+}
+
+function normalizeAuthError(error) {
+  if (!error) return "";
+  const message = error?.message || String(error);
+  if (message === "Failed to fetch" && window.location?.protocol === "file:") {
+    return "로컬 파일로 실행 중이면 인증 요청이 차단될 수 있습니다. http 서버로 열어주세요.";
+  }
+  return message;
+}
+
+function setAuthLoading(isLoading) {
+  const btnLogin = document.getElementById("btnAuthLogin");
+  const btnSignUp = document.getElementById("btnAuthSignUp");
+  const email = document.getElementById("authEmail");
+  const password = document.getElementById("authPassword");
+
+  if (btnLogin) {
+    btnLogin.disabled = isLoading;
+    btnLogin.textContent = isLoading ? "로그인 중..." : "로그인";
+  }
+  if (btnSignUp) {
+    btnSignUp.disabled = isLoading;
+  }
+  if (email) email.disabled = isLoading;
+  if (password) password.disabled = isLoading;
 }
 
 function openAuthModal(){
@@ -28,6 +60,11 @@ function closeAuthModal(){
 }
 
 async function requireLoginOrModal(){
+  if (!sb?.auth) {
+    openAuthModal();
+    showAuthError("Supabase 설정을 불러오지 못했습니다. CDN/키 설정을 확인해 주세요.");
+    throw new Error("Supabase auth client unavailable.");
+  }
   const { data } = await sb.auth.getSession();
   if (data?.session) return data.session;
 
@@ -39,32 +76,50 @@ async function requireLoginOrModal(){
 
     const doLogin = async () => {
       try{
+        setAuthLoading(true);
         const email = document.getElementById("authEmail")?.value?.trim();
         const password = document.getElementById("authPassword")?.value;
-        if (!email || !password) return showAuthError("이메일/비밀번호를 입력해 주세요.");
+        if (!email || !password) {
+          setAuthLoading(false);
+          return showAuthError("이메일/비밀번호를 입력해 주세요.");
+        }
 
         const { data, error } = await sb.auth.signInWithPassword({ email, password });
-        if (error) return showAuthError(error.message);
+        if (error) {
+          setAuthLoading(false);
+          return showAuthError(normalizeAuthError(error));
+        }
 
         closeAuthModal();
+        setAuthLoading(false);
         resolve(data.session);
       } catch (e){
-        showAuthError(e?.message || String(e));
+        setAuthLoading(false);
+        showAuthError(normalizeAuthError(e));
       }
     };
 
     const doSignUp = async () => {
       try{
+        setAuthLoading(true);
         const email = document.getElementById("authEmail")?.value?.trim();
         const password = document.getElementById("authPassword")?.value;
-        if (!email || !password) return showAuthError("이메일/비밀번호를 입력해 주세요.");
+        if (!email || !password) {
+          setAuthLoading(false);
+          return showAuthError("이메일/비밀번호를 입력해 주세요.");
+        }
 
         const { error } = await sb.auth.signUp({ email, password });
-        if (error) return showAuthError(error.message);
+        if (error) {
+          setAuthLoading(false);
+          return showAuthError(normalizeAuthError(error));
+        }
 
         showAuthError("회원가입 완료. 이제 로그인 버튼을 눌러주세요.");
+        setAuthLoading(false);
       } catch (e){
-        showAuthError(e?.message || String(e));
+        setAuthLoading(false);
+        showAuthError(normalizeAuthError(e));
       }
     };
 
