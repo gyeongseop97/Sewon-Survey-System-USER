@@ -1655,6 +1655,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ensureDisabledOverlayStyles();
   bind();
   renderAll();
+    openAuthModal();
 
   (async () => {
     try {
@@ -1664,6 +1665,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })();
 });
-
-
 })();
