@@ -654,27 +654,23 @@ async function loadSurveyByCode(){
   const code = (document.getElementById("surveyCodeInput")?.value || "").trim().toLowerCase();
   if (!code) return alert("설문 코드를 입력해 주세요.");
 
-  // 로그인 기반으로 운영할 거면 유지 (RLS 정책도 그에 맞춰야 함)
   await requireLoginOrModal();
 
-  const { data, error } = await sb
-    .from("surveys")
-    .select("id, title, code, survey_json, is_published")
-    .eq("code", code)
-    .eq("is_published", true)
-    .maybeSingle();
+  // ✅ RPC로 "공개 설문 1개"만 가져오기
+  const { data, error } = await sb.rpc("get_published_survey_by_code", { p_code: code });
 
   if (error) throw error;
-  if (!data) throw new Error("해당 코드의 설문을 찾지 못했습니다. (코드/게시 여부 확인)");
+  if (!data || !data.length) throw new Error("해당 코드의 설문을 찾지 못했습니다. (코드/게시 여부 확인)");
 
-  applySurveyJsonFromServer(data.survey_json);
+  const row = data[0];
+  applySurveyJsonFromServer(row.survey_json);
 
-  // UI 타이틀도 맞춰주고 싶으면(선택)
   const titleEl = document.getElementById("surveyTitleUser");
-  if (titleEl) titleEl.value = data.title || "";
+  if (titleEl) titleEl.value = row.title || "";
 
-  alert(`설문 불러오기 완료!\n- 설문명: ${data.title || ""}\n- 설문 코드: ${data.code || ""}`);
+  alert(`설문 불러오기 완료!\n- 설문명: ${row.title || ""}\n- 설문 코드: ${row.code || ""}`);
 }
+
 
   function importFromExcelXml(xmlText) {
     const sheetMap = parseExcelXmlTableToRows(xmlText);
