@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Sewon Survey System(USER)</title>
+<link href="styles.css" rel="stylesheet"/>
+</head>
+<link href="usericon.ico" rel="icon" type="image/x-icon"/>
+<body>
+<header class="topbar">
+<div class="brand">
+<div class="logo">
+<img alt="logo" src="usericon.ico"/>
+</div>
+<div class="title">
+<div class="h1">Sewon Survey System (user)</div>
+<div class="sub">세원 평가 설문 시스템 (사용자용)</div>
+</div>
+</div>
+<div class="top-center">
+<button class="nav-btn active" id="navFill" type="button">설문 작성</button>
+<button class="nav-btn" id="navManage" type="button">설문 관리</button>
+</div>
+<div class="top-actions">
+<input id="surveyCodeInput" placeholder="설문 코드" style="width:140px;" type="text"/>
+<button class="btn ghost" id="btnLoadByCode" type="button">코드로 불러오기</button>
+<button class="btn ghost" id="btnSaveDraft" type="button">임시저장</button>
+<button class="btn primary" id="btnSubmitSurvey" type="button">제출하기</button>
+<button id="btnRecallSurvey" type="button">회수하기</button>
+
+<div class="user-menu" id="userMenu"><button aria-expanded="false" aria-haspopup="menu" class="user-pill" id="userMenuBtn" type="button"><div class="user-line1" id="userLine1">로그인 사용자</div><div class="user-line2" id="userLine2">email@domain.com</div></button><div class="user-dropdown hidden" id="userDropdown" role="menu"><button class="dropdown-item" id="btnOpenProfile" role="menuitem" type="button">개인정보 관리</button><button class="dropdown-item" id="btnOpenSettings" role="menuitem" type="button">설정</button><div class="dropdown-sep"></div><button class="btn dropdown-item danger" id="btnLogout" role="menuitem" type="button">로그아웃</button></div></div></div>
+</header>
+<main class="layout">
+<aside class="sidebar">
+<div class="panel tone-1">
+<div class="field">
+<label>평가 제목</label>
+<input id="surveyTitleUser" placeholder="설문을 불러오면 제목이 표시됩니다." readonly="" type="text"/>
+</div>
+<div class="field">
+<label>회사명</label>
+<input id="targetCompany" placeholder="예: 세원정공" type="text"/>
+</div>
+<div class="field">
+<label>이름</label>
+<input id="targetName" placeholder="예: 홍길동" type="text"/>
+</div>
+<div class="hint" id="userOverview" style="margin-top:8px;"></div>
+</div>
+<div class="panel tone-2">
+<div class="panel-title">구성 트리</div>
+<div class="tree" id="userTree"></div>
+</div>
+</aside>
+<section class="canvas">
+<section class="view active" id="viewFill">
+<div class="canvas-header">
+<div>
+<div class="h2" id="userCanvasTitle">설문을 불러오세요</div>
+<div class="hint" id="userCanvasHint">상단의 “설문 불러오기”에서 관리자 엑셀(.xls)을 선택하세요.</div>
+</div>
+</div>
+<div class="editor" id="userFormRoot"></div>
+<div style="margin-top:12px; display:flex; justify-content:flex-end;">
+<button class="btn" id="btnPrevG2" type="button">이전으로</button>
+<button class="btn" id="btnNextG2" type="button">다음으로</button>
+</div>
+</section>
+<section class="view" id="viewManage">
+<div class="canvas-header">
+<div class="canvas-header-left">
+<div class="h2">설문 관리</div>
+<div class="hint">임시저장 또는 제출했던 설문을 확인하고, 이어서 작성하거나(설문 편집) 결과를 다운로드할 수 있습니다. (결과 전송 시에만 활성화)</div>
+</div>
+<div class="canvas-header-actions">
+<button class="btn" id="btnManageRefresh" type="button">새로고침</button>
+</div>
+</div>
+<div class="panel no-topbar" style="padding:0;">
+<div class="table-wrap">
+<table class="survey-table" id="userManageTable">
+<thead>
+<tr>
+<th style="width:70px;">NO</th>
+<th style="width:120px;">상태</th>
+<th>설문 제목</th>
+<th style="width:140px;">설문 코드</th>
+<th style="width:260px;">설문 기한</th>
+<th style="width:170px;">최종 작성일</th>
+<th style="width:120px;">설문 편집</th>
+<th style="width:140px;">결과 다운로드</th>
+</tr>
+</thead>
+<tbody id="userManageTbody">
+<tr><td class="muted" colspan="8" style="padding:14px;">불러오는 중...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+</main>
+<footer class="footer">
+<div>© Sewon Survey System (local)</div>
+<div class="muted">온오프라인/사내망 운영용</div>
+</footer>
+<!-- Supabase SDK (user_app.js보다 위에 있어야 함) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Auth Modal -->
+<div class="auth-backdrop hidden" id="authBackdrop">
+<div class="auth-card">
+<div class="auth-title">로그인</div>
+<div class="auth-sub">이메일과 비밀번호를 입력해 주세요.</div>
+<div class="auth-row">
+<label>이메일</label>
+<input id="authEmail" placeholder="example@company.com" type="email"/>
+</div>
+<div class="auth-row">
+<label>비밀번호</label>
+<input id="authPassword" placeholder="••••••••" type="password"/>
+</div>
+<div class="auth-error" id="authError"></div>
+<div class="auth-actions">
+<button class="btn ghost" id="btnAuthSignUp" type="button">회원가입</button>
+<button class="btn primary" id="btnAuthLogin" type="button">로그인</button>
+</div>
+</div>
+</div><div class="modal-backdrop hidden" id="settingsBackdrop"><div class="modal-card"><div class="modal-header"><div class="modal-title">설정</div><button class="modal-close" data-close="settingsBackdrop" type="button">×</button></div><div class="modal-content">
+<div class="settings-block">
+<div class="settings-title">보기</div>
+<label class="radio-row">
+<input checked="" name="themeMode" type="radio" value="light"/>
+<span>라이트 모드</span>
+</label>
+<label class="radio-row">
+<input name="themeMode" type="radio" value="dark"/>
+<span>다크 모드</span>
+</label>
+<div class="muted" style="margin-top:8px;">기본 값은 라이트 모드이며, 설정은 이 브라우저에 저장됩니다.</div>
+</div>
+<div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
+<button class="btn ghost" data-close="settingsBackdrop" id="btnThemeCancel" type="button">취소</button>
+<button class="btn primary" id="btnThemeSave" type="button">저장</button>
+</div>
+</div></div></div><div class="modal-backdrop hidden" id="profileBackdrop"><div class="modal-card"><div class="modal-header"><div class="modal-title">개인정보 관리</div><button class="modal-close" data-close="profileBackdrop" type="button">×</button></div><div class="modal-content">
+<div class="form-grid">
+<div class="field">
+<label>이름</label>
+<input id="profileName" readonly="" type="text"/>
+</div>
+<div class="field">
+<label>회원구분</label>
+<input id="profileMemberType" readonly="" type="text"/>
+</div>
+<div class="field">
+<label>회사</label>
+<input id="profileCompany" readonly="" type="text"/>
+</div>
+<div class="field" id="profileEmpNoRow">
+<label>사번</label>
+<input id="profileEmpNo" readonly="" type="text"/>
+</div>
+<div class="field" style="grid-column: 1 / -1;">
+<label>이메일 주소</label>
+<input id="profileEmail" readonly="" type="text"/>
+</div>
+</div>
+</div><div class="modal-actions"><button class="btn primary" data-close="profileBackdrop" type="button">닫기</button></div></div></div>
+<script src="user_app.js"></script>
+</body>
+</html>
