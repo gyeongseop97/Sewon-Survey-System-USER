@@ -315,14 +315,14 @@ function renderSubmitNotice(){
   // ✅ 기간 마감 시: 회수 불가 안내(자동 제출/제출 완료 상태 모두 포함)
   if (expired) {
     box.style.display = "block";
-    box.textContent = "설문 제출 기간이 마감되었습니다. 기간 마감 시점 기준으로 임시저장된 내용은 자동 제출 처리되며, 마감 이후에는 회수/수정이 불가능합니다. (관리자에서 기간을 연장하면 회수 후 수정 가능)";
+    box.textContent = "설문 제출 기간이 마감되었습니다. 기간 마감 시점 기준으로 임시저장된 내용은 자동 제출 처리되며, 마감 이후에는 회수/수정이 불가능합니다.";
     return;
   }
 
   // ✅ 제출 완료(기간 미마감): 회수 안내
   if (state?.locked){
     box.style.display = "block";
-    box.textContent = "제출이 완료된 설문입니다. 수정하시려면 회수하기 버튼을 누른 뒤 수정바랍니다. 수정 후 제출하기 버튼을 다시 눌러 제출하는 것을 잊지마세요.";
+    box.textContent = "제출이 완료된 설문입니다. 수정하시려면 회수하기 버튼을 누른 뒤 수정바랍니다.";
   } else {
     box.style.display = "none";
     box.textContent = "";
