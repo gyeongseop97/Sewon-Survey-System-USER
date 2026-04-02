@@ -1399,78 +1399,9 @@ select,
 }
 
 /* =========================
-   Mobile Responsive
+   Mobile layout - final
    ========================= */
 @media (max-width: 900px){
-
-  /* 전체 레이아웃 세로로 */
-  .layout{
-    display:flex;
-    flex-direction:column;
-    height:auto;
-  }
-
-  .sidebar{
-    width:100%;
-    order:2;
-  }
-
-  .canvas{
-    width:100%;
-    order:1;
-  }
-
-  /* 상단바 줄바꿈 */
-  .topbar{
-    grid-template-columns: 1fr;
-    row-gap:10px;
-  }
-
-  .top-center{
-    justify-content:flex-start;
-    flex-wrap:wrap;
-  }
-
-  .top-actions{
-    justify-content:flex-start;
-    flex-wrap:wrap;
-  }
-
-  /* 입력칸 / 버튼 크게 */
-  input, button, .btn{
-    width:100%;
-  }
-
-  #surveyCodeInput{
-    width:100% !important;
-  }
-
-  /* 테이블 가로 스크롤 */
-  .table-wrap{
-    overflow-x:auto;
-  }
-
-  table{
-    min-width:700px;
-  }
-}
-
-/* 아주 작은 화면 */
-@media (max-width: 520px){
-  .title .h1{
-    font-size:16px;
-  }
-
-  .btn{
-    min-height:44px;
-    font-size:15px;
-  }
-}
-/* =========================
-   Mobile layout fix
-   ========================= */
-@media (max-width: 640px){
-
   body{
     height:auto;
     overflow:auto;
@@ -1479,8 +1410,10 @@ select,
   .layout{
     display:flex;
     flex-direction:column;
-    padding:10px;
     gap:10px;
+    padding:10px;
+    flex:initial;
+    min-height:auto;
     overflow:visible;
   }
 
@@ -1494,7 +1427,9 @@ select,
   .canvas{
     width:100%;
     order:1;
+    min-height:auto;
     overflow:visible;
+    position:relative;
   }
 
   .topbar{
@@ -1505,8 +1440,10 @@ select,
 
   .brand{
     width:100%;
+    justify-content:flex-start;
   }
 
+  /* 상단 메뉴 3개 가로 한 줄 */
   .top-center{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
@@ -1517,12 +1454,13 @@ select,
   .top-center .nav-btn{
     width:100%;
     min-width:0;
+    height:44px;
     padding:0 6px;
     font-size:13px;
-    height:44px;
     white-space:nowrap;
   }
 
+  /* 상단 액션 영역 */
   .top-actions{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
@@ -1531,15 +1469,16 @@ select,
     align-items:stretch;
   }
 
-  /* 1행: 설문코드 입력칸 전체폭 */
+  /* 설문코드 입력칸 전체폭 */
   #surveyCodeInput{
     grid-column:1 / -1;
     width:100% !important;
     height:44px;
+    min-height:44px;
     font-size:14px;
   }
 
-  /* 2행: 코드로 불러오기 */
+  /* 코드로 불러오기 전체폭 */
   #btnLoadByCode{
     grid-column:1 / -1;
     width:100%;
@@ -1547,7 +1486,7 @@ select,
     font-size:14px;
   }
 
-  /* 3행: 임시저장 / 제출하기 / 회수하기 */
+  /* 임시저장 / 제출하기 / 회수하기 가로 한 줄 */
   #btnSaveDraft,
   #btnSubmitSurvey,
   #btnRecallSurvey{
@@ -1559,55 +1498,50 @@ select,
     white-space:nowrap;
   }
 
-  /* 사용자 pill은 전체폭으로 아래 배치 */
-  .user-menu,
-  .user-pill{
+  /* 사용자 정보는 아래 한 줄 전체 */
+  .user-menu{
     grid-column:1 / -1;
+    width:100%;
+  }
+
+  .user-pill{
     width:100%;
     min-width:0;
   }
 
-  .user-pill{
-    min-height:auto;
-    padding:10px 12px;
-  }
-
-  .user-line1,
-  .user-line2{
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-
-  .panel,
-  .canvas-header,
-  .qcard,
   .table-wrap{
-    border-radius:12px;
+    overflow-x:auto;
   }
 
-  .editor{
-    min-height:auto;
+  .survey-table{
+    min-width:700px;
+  }
+}
+
+@media (max-width: 520px){
+  .title .h1{
+    font-size:15px;
   }
 
-  .footer{
-    flex-direction:column;
-    gap:4px;
-    align-items:flex-start;
+  .title .sub{
+    font-size:11px;
   }
 
-  /* 하단 이전/다음 버튼 */
-  #viewFill > div[style*="justify-content:flex-end"]{
-    display:grid !important;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    justify-content:stretch !important;
+  .logo{
+    width:52px;
+    height:52px;
   }
 
-  #btnPrevG2,
-  #btnNextG2{
-    width:100%;
-    min-height:44px;
-    font-size:14px;
+  .logo img{
+    width:38px;
+    height:38px;
+  }
+
+  .top-center .nav-btn,
+  #btnLoadByCode,
+  #btnSaveDraft,
+  #btnSubmitSurvey,
+  #btnRecallSurvey{
+    font-size:12px;
   }
 }
