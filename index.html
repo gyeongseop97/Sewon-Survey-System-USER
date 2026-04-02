@@ -35,34 +35,25 @@
 </header>
 <main class="layout">
 <aside class="sidebar">
-  <button class="mobile-accordion-btn" id="btnToggleMeta" type="button">
-    기본정보 보기
-  </button>
-
-  <div class="panel tone-1 mobile-accordion-body open" id="metaPanel">
-    <div class="field">
-      <label>평가 제목</label>
-      <input id="surveyTitleUser" placeholder="설문을 불러오면 제목이 표시됩니다." readonly type="text"/>
-    </div>
-    <div class="field">
-      <label>회사명</label>
-      <input id="targetCompany" placeholder="예: 세원정공" type="text"/>
-    </div>
-    <div class="field">
-      <label>이름</label>
-      <input id="targetName" placeholder="예: 홍길동" type="text"/>
-    </div>
-    <div class="hint" id="userOverview" style="margin-top:8px;"></div>
-  </div>
-
-  <button class="mobile-accordion-btn" id="btnToggleTree" type="button">
-    구성트리 보기
-  </button>
-
-  <div class="panel tone-2 mobile-accordion-body" id="treePanel">
-    <div class="panel-title">구성 트리</div>
-    <div class="tree" id="userTree"></div>
-  </div>
+<div class="panel tone-1">
+<div class="field">
+<label>평가 제목</label>
+<input id="surveyTitleUser" placeholder="설문을 불러오면 제목이 표시됩니다." readonly="" type="text"/>
+</div>
+<div class="field">
+<label>회사명</label>
+<input id="targetCompany" placeholder="예: 세원정공" type="text"/>
+</div>
+<div class="field">
+<label>이름</label>
+<input id="targetName" placeholder="예: 홍길동" type="text"/>
+</div>
+<div class="hint" id="userOverview" style="margin-top:8px;"></div>
+</div>
+<div class="panel tone-2">
+<div class="panel-title">구성 트리</div>
+<div class="tree" id="userTree"></div>
+</div>
 </aside>
 <section class="canvas">
   <section class="view active" id="viewFill">
@@ -148,8 +139,8 @@
 </section>
 </main>
 <footer class="footer">
-<div>© Sewon Survey System</div>
-<div class="muted">온라인 운영용</div>
+<div>© Sewon Survey System (local)</div>
+<div class="muted">온오프라인/사내망 운영용</div>
 </footer>
 <!-- Supabase SDK (user_app.js보다 위에 있어야 함) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
