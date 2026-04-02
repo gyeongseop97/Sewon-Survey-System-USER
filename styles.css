@@ -1466,3 +1466,148 @@ select,
     font-size:15px;
   }
 }
+/* =========================
+   Mobile layout fix
+   ========================= */
+@media (max-width: 640px){
+
+  body{
+    height:auto;
+    overflow:auto;
+  }
+
+  .layout{
+    display:flex;
+    flex-direction:column;
+    padding:10px;
+    gap:10px;
+    overflow:visible;
+  }
+
+  .sidebar{
+    width:100%;
+    min-width:0;
+    order:2;
+    overflow:visible;
+  }
+
+  .canvas{
+    width:100%;
+    order:1;
+    overflow:visible;
+  }
+
+  .topbar{
+    grid-template-columns:1fr;
+    row-gap:10px;
+    padding:10px;
+  }
+
+  .brand{
+    width:100%;
+  }
+
+  .top-center{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    width:100%;
+  }
+
+  .top-center .nav-btn{
+    width:100%;
+    min-width:0;
+    padding:0 6px;
+    font-size:13px;
+    height:44px;
+    white-space:nowrap;
+  }
+
+  .top-actions{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    width:100%;
+    align-items:stretch;
+  }
+
+  /* 1행: 설문코드 입력칸 전체폭 */
+  #surveyCodeInput{
+    grid-column:1 / -1;
+    width:100% !important;
+    height:44px;
+    font-size:14px;
+  }
+
+  /* 2행: 코드로 불러오기 */
+  #btnLoadByCode{
+    grid-column:1 / -1;
+    width:100%;
+    min-height:44px;
+    font-size:14px;
+  }
+
+  /* 3행: 임시저장 / 제출하기 / 회수하기 */
+  #btnSaveDraft,
+  #btnSubmitSurvey,
+  #btnRecallSurvey{
+    width:100%;
+    min-width:0;
+    min-height:44px;
+    font-size:14px;
+    padding:0 6px;
+    white-space:nowrap;
+  }
+
+  /* 사용자 pill은 전체폭으로 아래 배치 */
+  .user-menu,
+  .user-pill{
+    grid-column:1 / -1;
+    width:100%;
+    min-width:0;
+  }
+
+  .user-pill{
+    min-height:auto;
+    padding:10px 12px;
+  }
+
+  .user-line1,
+  .user-line2{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .panel,
+  .canvas-header,
+  .qcard,
+  .table-wrap{
+    border-radius:12px;
+  }
+
+  .editor{
+    min-height:auto;
+  }
+
+  .footer{
+    flex-direction:column;
+    gap:4px;
+    align-items:flex-start;
+  }
+
+  /* 하단 이전/다음 버튼 */
+  #viewFill > div[style*="justify-content:flex-end"]{
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    justify-content:stretch !important;
+  }
+
+  #btnPrevG2,
+  #btnNextG2{
+    width:100%;
+    min-height:44px;
+    font-size:14px;
+  }
+}
