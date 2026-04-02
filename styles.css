@@ -1397,3 +1397,72 @@ select,
 .nav-btn{
   transition: background .22s ease, color .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
+
+/* =========================
+   Mobile Responsive
+   ========================= */
+@media (max-width: 900px){
+
+  /* 전체 레이아웃 세로로 */
+  .layout{
+    display:flex;
+    flex-direction:column;
+    height:auto;
+  }
+
+  .sidebar{
+    width:100%;
+    order:2;
+  }
+
+  .canvas{
+    width:100%;
+    order:1;
+  }
+
+  /* 상단바 줄바꿈 */
+  .topbar{
+    grid-template-columns: 1fr;
+    row-gap:10px;
+  }
+
+  .top-center{
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .top-actions{
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+
+  /* 입력칸 / 버튼 크게 */
+  input, button, .btn{
+    width:100%;
+  }
+
+  #surveyCodeInput{
+    width:100% !important;
+  }
+
+  /* 테이블 가로 스크롤 */
+  .table-wrap{
+    overflow-x:auto;
+  }
+
+  table{
+    min-width:700px;
+  }
+}
+
+/* 아주 작은 화면 */
+@media (max-width: 520px){
+  .title .h1{
+    font-size:16px;
+  }
+
+  .btn{
+    min-height:44px;
+    font-size:15px;
+  }
+}
