@@ -1545,3 +1545,34 @@ select,
     font-size:12px;
   }
 }
+
+.mobile-accordion-btn{
+  display:none;
+}
+
+@media (max-width: 900px){
+  .mobile-accordion-btn{
+    display:flex;
+    width:100%;
+    min-height:44px;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 14px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    color:var(--text);
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    margin-bottom:8px;
+  }
+
+  .mobile-accordion-body{
+    display:none;
+  }
+
+  .mobile-accordion-body.open{
+    display:block;
+  }
+}
