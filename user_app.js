@@ -4170,7 +4170,31 @@ const url = URL.createObjectURL(blob);
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
+function bindMobileAccordion(){
+  const btnMeta = document.getElementById("btnToggleMeta");
+  const btnTree = document.getElementById("btnToggleTree");
+  const metaPanel = document.getElementById("metaPanel");
+  const treePanel = document.getElementById("treePanel");
 
+  if(btnMeta && metaPanel){
+    btnMeta.onclick = () => {
+      metaPanel.classList.toggle("open");
+      btnMeta.textContent = metaPanel.classList.contains("open")
+        ? "기본정보 접기"
+        : "기본정보 보기";
+    };
+  }
+
+  if(btnTree && treePanel){
+    btnTree.onclick = () => {
+      treePanel.classList.toggle("open");
+      btnTree.textContent = treePanel.classList.contains("open")
+        ? "구성트리 접기"
+        : "구성트리 보기";
+    };
+  }
+}
+  
 // ------------------ Bind UI ------------------
   function bind() {
     // --- Top nav (설문 작성 / 설문 관리) ---
@@ -4372,7 +4396,8 @@ if (btnNext && btnPrev) {
   btnNext.onclick = () => goNextG2();
   btnPrev.onclick = () => goPrevG2();
 }
-
+bindMobileAccordion();
+  }
 // ================== Result Download (user) ==================
 function updateResultDownloadUI(){
   const btn = document.getElementById("btnDownloadResult");
