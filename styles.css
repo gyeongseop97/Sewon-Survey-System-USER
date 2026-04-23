@@ -1593,4 +1593,42 @@ select,
 
 .answer-check-row input[type="checkbox"]{
   margin-top:2px;
+}/* =========================
+   Tree accordion animation
+   ========================= */
+.tree-group{
+  margin-bottom: 6px;
+}
+
+.tree-children{
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows .28s ease, opacity .22s ease;
+}
+
+.tree-group.open .tree-children{
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.tree-children-inner{
+  overflow: hidden;
+}
+
+/* 펼칠 때 G2가 살짝 위에서 내려오는 느낌 */
+.tree-children-inner .tree-row.g2{
+  transform: translateY(-4px);
+  opacity: 0;
+  transition: transform .28s ease, opacity .22s ease, background-color .15s ease;
+}
+
+.tree-group.open .tree-children-inner .tree-row.g2{
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 토글 버튼 반응도 조금 부드럽게 */
+.tree-toggle{
+  transition: transform .18s ease, background-color .15s ease, border-color .15s ease;
 }
