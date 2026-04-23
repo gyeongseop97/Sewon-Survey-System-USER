@@ -2483,41 +2483,45 @@ function validateRequiredEvidenceBeforeSubmit(){
 
     const rows = [];
 
-    for (const g1 of state.survey.groups1) {
-      const open = !!state.treeOpen[g1.id];
-      const g2Count = (g1.groups2 || []).length;
+for (const g1 of state.survey.groups1) {
+  const open = !!state.treeOpen[g1.id];
+  const g2Count = (g1.groups2 || []).length;
 
-      rows.push(`
-        <div class="tree-row g1" data-kind="g1" data-id="${escapeHtml(g1.id)}">
-          <button class="tree-toggle" data-toggle="g1" data-id="${escapeHtml(g1.id)}" type="button">
-            ${open ? "−" : "+"}
-          </button>
-          <div class="tree-text">
-            <span class="tree-badge">G1</span>
-            <span class="tree-label">${escapeHtml(g1.name || "(무제 구분1)")}</span>
-          </div>
-          <div class="tree-meta">${g2Count}개</div>
+  rows.push(`
+    <div class="tree-group ${open ? "open" : ""}" data-group-id="${escapeHtml(g1.id)}">
+      <div class="tree-row g1" data-kind="g1" data-id="${escapeHtml(g1.id)}">
+        <button class="tree-toggle" data-toggle="g1" data-id="${escapeHtml(g1.id)}" type="button">
+          ${open ? "−" : "+"}
+        </button>
+        <div class="tree-text">
+          <span class="tree-badge">G1</span>
+          <span class="tree-label">${escapeHtml(g1.name || "(무제 구분1)")}</span>
         </div>
-      `);
+        <div class="tree-meta">${g2Count}개</div>
+      </div>
 
-      if (open) {
-        for (const g2 of g1.groups2 || []) {
-          const active = state.currentG2Id === g2.id;
-          const qCount = (g2.questions || []).length;
+      <div class="tree-children">
+        <div class="tree-children-inner">
+          ${(g1.groups2 || []).map((g2) => {
+            const active = state.currentG2Id === g2.id;
+            const qCount = (g2.questions || []).length;
 
-          rows.push(`
-            <div class="tree-row g2 ${active ? "active" : ""}" data-kind="g2" data-id="${escapeHtml(g2.id)}">
-              <div class="tree-toggle spacer"></div>
-              <div class="tree-text">
-                <span class="tree-badge">G2</span>
-                <span class="tree-label">${escapeHtml(g2.name || "(무제 구분2)")}</span>
+            return `
+              <div class="tree-row g2 ${active ? "active" : ""}" data-kind="g2" data-id="${escapeHtml(g2.id)}">
+                <div class="tree-toggle spacer"></div>
+                <div class="tree-text">
+                  <span class="tree-badge">G2</span>
+                  <span class="tree-label">${escapeHtml(g2.name || "(무제 구분2)")}</span>
+                </div>
+                <div class="tree-meta">${qCount}문항</div>
               </div>
-              <div class="tree-meta">${qCount}문항</div>
-            </div>
-          `);
-        }
-      }
-    }
+            `;
+          }).join("")}
+        </div>
+      </div>
+    </div>
+  `);
+}
 
     host.innerHTML = rows.join("");
 
@@ -2526,26 +2530,38 @@ function validateRequiredEvidenceBeforeSubmit(){
       const t = e.target;
 
       // 1) toggle 버튼
-      const toggleBtn = t.closest?.("[data-toggle=g1]");
-      if (toggleBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const id = toggleBtn.getAttribute("data-id");
-        if (!id) return;
-        state.treeOpen[id] = !state.treeOpen[id];
-        renderTree();
-        return;
-      }
+const toggleG1 = (id) => {
+  if (!id) return;
 
-      // 2) g1 행 클릭도 접기/펼치기
-      const g1Row = t.closest?.(".tree-row.g1[data-kind=g1]");
-      if (g1Row) {
-        const id = g1Row.getAttribute("data-id");
-        if (!id) return;
-        state.treeOpen[id] = !state.treeOpen[id];
-        renderTree();
-        return;
-      }
+  state.treeOpen[id] = !state.treeOpen[id];
+
+  const group = host.querySelector(`.tree-group[data-group-id="${CSS.escape(id)}"]`);
+  if (!group) return;
+
+  const isOpen = !!state.treeOpen[id];
+  group.classList.toggle("open", isOpen);
+
+  const btn = group.querySelector(`.tree-toggle[data-toggle="g1"][data-id="${CSS.escape(id)}"]`);
+  if (btn) btn.textContent = isOpen ? "−" : "+";
+};
+
+// 1) toggle 버튼
+const toggleBtn = t.closest?.("[data-toggle=g1]");
+if (toggleBtn) {
+  e.preventDefault();
+  e.stopPropagation();
+  const id = toggleBtn.getAttribute("data-id");
+  toggleG1(id);
+  return;
+}
+
+// 2) g1 행 클릭도 접기/펼치기
+const g1Row = t.closest?.(".tree-row.g1[data-kind=g1]");
+if (g1Row) {
+  const id = g1Row.getAttribute("data-id");
+  toggleG1(id);
+  return;
+}
 
 // 3) g2 클릭 -> 이동
 const g2Row = t.closest?.(".tree-row.g2[data-kind=g2]");
